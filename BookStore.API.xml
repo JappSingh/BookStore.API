@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BookStore.API</name>
+    </assembly>
+    <members>
+        <member name="T:BookStore.API.Controllers.ValuesController">
+            <summary>
+            This is a test API Controller
+            </summary>
+        </member>
+        <member name="M:BookStore.API.Controllers.ValuesController.Get">
+            <summary>
+            Gets values
+            </summary>
+            <returns>An IEnumerable of values</returns>
+        </member>
+    </members>
+</doc>
