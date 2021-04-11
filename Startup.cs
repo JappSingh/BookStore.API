@@ -82,8 +82,9 @@ namespace BookStore.API
             // Add Singleton instance of Logger Service
             services.AddSingleton<ILoggerService, LoggerService>();
 
-            // Add Repository
+            // Add Repositories
             services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
 
             //services.AddRazorPages();
             //APIs use Controllers (MVC), so rather than Razor PAges, we add those..
