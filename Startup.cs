@@ -70,8 +70,20 @@ namespace BookStore.API
                 c.IncludeXmlComments(xpath);
             });
 
+            // Scoped lifetime services are created once per client request (connection).
+            // Transient lifetime services are created each time they're requested from the service container.
+            // This lifetime works best for lightweight, stateless services.
+            // Singleton lifetime services are created the first time they're requested
+            // (or when Startup.ConfigureServices is run and an instance is specified with the service registration).
+            // Every subsequent request uses the same instance.
+            // If the app requires singleton behavior, allowing the service container to manage the service's lifetime is recommended.
+            // Don't implement the singleton design pattern and provide user code to manage the object's lifetime in the class.
+
             // Add Singleton instance of Logger Service
             services.AddSingleton<ILoggerService, LoggerService>();
+
+            // Add Repository
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
 
             //services.AddRazorPages();
             //APIs use Controllers (MVC), so rather than Razor PAges, we add those..
