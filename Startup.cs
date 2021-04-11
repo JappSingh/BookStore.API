@@ -1,5 +1,6 @@
 using BookStore.API.Contracts;
 using BookStore.API.Data;
+using BookStore.API.Mappings;
 using BookStore.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 namespace BookStore.API
 {
     // MIDDLEWARE
-    // We selected "Web App (with Razor Pages)" as project type to take advantage of 'Individual user Account' option for authentication.    
+    // We selected "Web App (with Razor Pages)" as project type to take advantage of 'Individual user Account' option for authentication.
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -35,7 +36,7 @@ namespace BookStore.API
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection"))); // Use SQL Server with Conn String from appsettings.json
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -49,6 +50,9 @@ namespace BookStore.API
                         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                     });
             });
+
+            // We use "AutoMapper" & its Extensions.DI [nuget pkg] for mapping Data entities with Data Models or DTOs (API abstractions)
+            services.AddAutoMapper(typeof(Maps));
 
             // Nuget Swashbuckle.AspNetCore.Swagger,Gen,UI for auto-documenting API. NLog.extensions.logging pkg for logging.
             // Add Swagger service
