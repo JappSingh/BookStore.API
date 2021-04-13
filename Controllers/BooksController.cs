@@ -2,11 +2,11 @@
 using BookStore.API.Contracts;
 using BookStore.API.Data;
 using BookStore.API.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BookStore.API.Controllers
@@ -16,6 +16,7 @@ namespace BookStore.API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // all endpoints accessible by authenticated users only
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
@@ -92,6 +93,7 @@ namespace BookStore.API.Controllers
         /// <param name="bookDTO">Book with required Title, ISBN and Author ID, and optional Year, Summary, Image path and Price</param>
         /// <returns>Book object</returns>
         [HttpPost]
+        [Authorize(Roles = "Administrator")] // more stricter than class level
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -135,6 +137,7 @@ namespace BookStore.API.Controllers
         /// <param name="bookDTO">Book with updated data</param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -186,6 +189,7 @@ namespace BookStore.API.Controllers
         /// <param name="id">Id of book to be removed</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

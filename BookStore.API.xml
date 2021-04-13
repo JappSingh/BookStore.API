@@ -37,16 +37,59 @@
             <param name="authorDTO">Author with required Firstname and Lastname and an optional Bio</param>
             <returns></returns>
         </member>
-        <member name="T:BookStore.API.Controllers.ValuesController">
+        <member name="M:BookStore.API.Controllers.AuthorsController.Delete(System.Int32)">
             <summary>
-            This is a test API Controller
+            Remove an Author by Id
+            </summary>
+            <param name="id">Id of author to be removed</param>
+            <returns></returns>
+        </member>
+        <member name="T:BookStore.API.Controllers.BooksController">
+            <summary>
+            Interacts with the Books Table
             </summary>
         </member>
-        <member name="M:BookStore.API.Controllers.ValuesController.Get">
+        <member name="M:BookStore.API.Controllers.BooksController.GetBooks">
             <summary>
-            Gets values
+            Get All Books
             </summary>
-            <returns>An IEnumerable of values</returns>
+            <returns>A List of Books</returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.GetBook(System.Int32)">
+            <summary>
+            Get a Book by Id
+            </summary>
+            <param name="id"></param>
+            <returns>A Book record</returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.Create(BookStore.API.DTOs.BookCreateDTO)">
+            <summary>
+            Create a new Book
+            </summary>
+            <param name="bookDTO">Book with required Title, ISBN and Author ID, and optional Year, Summary, Image path and Price</param>
+            <returns>Book object</returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.Update(System.Int32,BookStore.API.DTOs.BookUpdateDTO)">
+            <summary>
+            Update a Book
+            </summary>
+            <param name="id">Id of book to be updated</param>
+            <param name="bookDTO">Book with updated data</param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.Delete(System.Int32)">
+            <summary>
+            Remove a Book by Id
+            </summary>
+            <param name="id">Id of book to be removed</param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.UsersController.Login(BookStore.API.DTOs.UserDTO)">
+            <summary>
+            User Login Endpoint
+            </summary>
+            <param name="userDTO"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

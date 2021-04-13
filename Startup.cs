@@ -2,6 +2,7 @@ using BookStore.API.Contracts;
 using BookStore.API.Data;
 using BookStore.API.Mappings;
 using BookStore.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,11 +12,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BookStore.API
@@ -38,8 +41,9 @@ namespace BookStore.API
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"))); // Use SQL Server with Conn String from appsettings.json
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<IdentityUser>() // If need confirmed account: (options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>() // IdentityUser in line above was auto-added by template; need to add IdentityRole as well
+                .AddEntityFrameworkStores<ApplicationDbContext>(); // run cmd: update-database in Package Manager Console; this will create Identity tables in DB
 
             // CORS
             services.AddCors(o =>
@@ -53,6 +57,22 @@ namespace BookStore.API
 
             // We use "AutoMapper" & its Extensions.DI [nuget pkg] for mapping Data entities with Data Models or DTOs (API abstractions)
             services.AddAutoMapper(typeof(Maps));
+
+            // Nuget AspNetCore.Authentication.JwtBearer
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // Bearer
+                .AddJwtBearer(o => 
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
 
             // Nuget Swashbuckle.AspNetCore.Swagger,Gen,UI for auto-documenting API. NLog.extensions.logging pkg for logging.
             // Add Swagger service
@@ -92,7 +112,8 @@ namespace BookStore.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager) // 1st 2 params adedd by template; last 2 params manually added
         {
             if (env.IsDevelopment())
             {
@@ -120,6 +141,9 @@ namespace BookStore.API
             // app.UseStaticFiles();
 
             app.UseCors("corsPolicy"); // defined in ConfigureServices above
+
+            // Seed sample roles and users
+            SeedData.Seed(userManager, roleManager).Wait();
 
             app.UseRouting();
 

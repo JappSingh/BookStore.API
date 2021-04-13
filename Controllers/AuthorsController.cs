@@ -2,6 +2,7 @@
 using BookStore.API.Contracts;
 using BookStore.API.Data;
 using BookStore.API.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -36,6 +37,7 @@ namespace BookStore.API.Controllers
         /// </summary>
         /// <returns>List of Authors</returns>
         [HttpGet]
+        [AllowAnonymous] // [AllowAnonynous] => no authentication needed; [Authorize] => any authenticated user
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAuthors()
@@ -61,6 +63,7 @@ namespace BookStore.API.Controllers
         /// <param name="id"></param>
         /// <returns>An Author's record</returns>
         [HttpGet("{id}")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -93,6 +96,8 @@ namespace BookStore.API.Controllers
         /// <param name="authorDTO">Author with required Firstname and Lastname and an optional Bio</param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = "Administrator")] // comma-separated-list
+        // Results in 401 Unauthorized w/o token [not authenticated] and 403 Forbidden with a 'customer' claim token [authenticated but not authorized]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -136,6 +141,7 @@ namespace BookStore.API.Controllers
         /// <param name="authorDTO">Author with required Firstname and Lastname and an optional Bio</param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator, Customer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -187,6 +193,7 @@ namespace BookStore.API.Controllers
         /// <param name="id">Id of author to be removed</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

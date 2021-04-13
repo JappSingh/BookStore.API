@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookStore.API.Data;
 using BookStore.API.DTOs;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.API.Mappings
 {
@@ -15,6 +16,7 @@ namespace BookStore.API.Mappings
             CreateMap<Book, BookDTO>().ReverseMap();
             CreateMap<Book, BookCreateDTO>().ReverseMap();
             CreateMap<Book, BookUpdateDTO>().ReverseMap();
+            CreateMap<IdentityUser, UserViewDTO>();
         }
         
     }
