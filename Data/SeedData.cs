@@ -23,11 +23,11 @@ namespace BookStore.API.Data
 
         private async static Task SeedUsers(UserManager<IdentityUser> userManager)
         {
-            await SeedUsers(userManager, "admin", "admin@bookstore.com", 
+            await SeedUsers(userManager, "admin2@bookstore.com", "admin2@bookstore.com", 
                 "P@ssword0", Role.Administrator);
-            await SeedUsers(userManager, "customer1", "customer1@gmail.com",
+            await SeedUsers(userManager, "customer10@gmail.com", "customer10@gmail.com",
                 "P@ssword1", Role.Customer);
-            await SeedUsers(userManager, "customer2", "customer2@gmail.com",
+            await SeedUsers(userManager, "customer11@gmail.com", "customer11@gmail.com",
                 "P@ssword2", Role.Customer);
         }
 

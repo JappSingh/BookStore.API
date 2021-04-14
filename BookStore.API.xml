@@ -84,6 +84,13 @@
             <param name="id">Id of book to be removed</param>
             <returns></returns>
         </member>
+        <member name="M:BookStore.API.Controllers.UsersController.Register(BookStore.API.DTOs.UserDTO)">
+            <summary>
+            User Registration Endpoint
+            </summary>
+            <param name="userDTO"></param>
+            <returns></returns>
+        </member>
         <member name="M:BookStore.API.Controllers.UsersController.Login(BookStore.API.DTOs.UserDTO)">
             <summary>
             User Login Endpoint

@@ -40,10 +40,46 @@ namespace BookStore.API.Controllers
         }
 
         /// <summary>
+        /// User Registration Endpoint
+        /// </summary>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
+        [Route("register")]
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+        {
+            var location = GetControllerActionNames();
+            try
+            {
+                var username = userDTO.Username;
+                _logger.LogInfo($"{location}: Registration attempt for {username}");
+                var user = new IdentityUser()
+                {
+                    Email = username, UserName = username
+                };
+                var result = await _userManager.CreateAsync(user, userDTO.Password);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        _logger.LogError($"{location}: {error.Code} {error.Description}");
+                    }
+                    return InternalError($"{location}: {username} registration attempt failed");
+                }
+                return Ok(new { result.Succeeded });
+            }
+            catch (Exception e)
+            {
+                return InternalError($"{location}: {e.Message} {e.InnerException}");
+            }
+        }
+
+        /// <summary>
         /// User Login Endpoint
         /// </summary>
         /// <param name="userDTO"></param>
         /// <returns></returns>
+        [Route("login")]
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] UserDTO userDTO)
@@ -58,11 +94,12 @@ namespace BookStore.API.Controllers
                 {
                     var user = await _userManager.FindByNameAsync(username);
                     var tokenString = await GenerateJsonWebToken(user);
-                    var resultDTO = _mapper.Map<UserViewDTO>(user);
+                    //var resultDTO = _mapper.Map<UserViewDTO>(user);
                     _logger.LogInfo($"{location}: {username} successfully authenticated");
-                    return Ok(new { user = resultDTO, token = tokenString} ); // client should store & use this token
+                    //return Ok(new { user = resultDTO, token = tokenString} );
+                    return Ok(new { token = tokenString }); // client should store & use this token
                 }
-                _logger.LogInfo($"{location}: {username} not authenticated"); // username or pwd incorrect
+                _logger.LogError($"{location}: {username} not authenticated"); // username or pwd incorrect
                 return Unauthorized(userDTO); // 401
             }
             catch (Exception e)
